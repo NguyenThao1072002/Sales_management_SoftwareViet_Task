@@ -1,0 +1,89 @@
+<div class="sales-header">
+    <div class="filters">
+        <nz-date-picker [(ngModel)]="fromDate" nzFormat="dd/MM/yyyy" placeholder="Chọn thời điểm"></nz-date-picker>
+        <nz-date-picker [(ngModel)]="toDate" nzFormat="dd/MM/yyyy" placeholder="Chọn thời điểm"></nz-date-picker>
+        <input nz-input [(ngModel)]="searchText" placeholder="Số CT/Mã KH/Tên KH/CT tham chiếu" />
+        <button nz-button nzType="primary" (click)="onSearch()">
+            <i nz-icon nzType="search"></i>
+            <span>Tìm kiếm</span>
+        </button>
+    </div>
+    <div class="actions">
+        <button nz-button nzType="primary" (click)="onAdd()">
+            <i nz-icon nzType="plus"></i>
+            <span>Thêm mới</span>
+        </button>
+    </div>
+</div>
+
+<!-- Filter Tags -->
+<div class="status-tags">
+    <span class="tag all" (click)="filterByStatus('')">Tất cả</span>
+    <span class="tag done" (click)="filterByStatus('Paid')">Hoàn tất</span>
+    <span class="tag pending" (click)="filterByStatus('Unpaid')">Chờ duyệt</span>
+    <span class="tag rejected" (click)="filterByStatus('Rejected')">Bị từ chối</span>
+</div>
+
+<div class="table-wrapper">
+    <nz-table #basicTable [nzData]="filteredData" [nzBordered]="true" [nzSize]="'middle'" [nzScroll]="{ x: '1100px' }"
+        [nzShowPagination]="false" [nzLoading]="loading">
+        <thead>
+            <tr>
+                <th [nzWidth]="'60px'">#</th>
+                <th [nzWidth]="'120px'">SỐ CT</th>
+                <th [nzWidth]="'120px'">NGÀY CT</th>
+                <th [nzWidth]="'100px'">MÃ KH</th>
+                <th [nzWidth]="'150px'">KHÁCH HÀNG</th>
+                <th [nzWidth]="'120px'">NGƯỜI TẠO</th>
+                <th [nzWidth]="'120px'">TỔNG TIỀN</th>
+                <th [nzWidth]="'120px'">TRẠNG THÁI</th>
+                <th [nzWidth]="'150px'">THAO TÁC</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of filteredData; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>{{ item.invoiceCode }}</td>
+                <td>{{ item.invoiceDate | date:'dd/MM/yyyy' }}</td>
+                <td>{{ item.customerCode }}</td>
+                <td>{{ item.customerName }}</td>
+                <td>{{ item.deliveryPerson }}</td>
+                <td>{{ item.totalAmount | number: '1.0-0' }} đ</td>
+                <td>
+                    <span class="status-label" [ngClass]="{
+                            'text-done': item.invoiceStatus === 'Paid',
+                            'text-pending': item.invoiceStatus === 'Unpaid',
+                            'text-rejected': item.invoiceStatus === 'Rejected'
+                        }">
+                        {{ getInvoiceStatusText(item.invoiceStatus) }}
+                    </span>
+                </td>
+
+                <td class="action-btns">
+                    <button nz-button nzShape="circle" class="view-btn" nz-tooltip="Xem chi tiết"
+                        (click)="viewInvoice(item.invoiceCode)">
+                        <i nz-icon nzType="eye"></i>
+                    </button>
+                    <button nz-button nzShape="circle" class="edit-btn" nz-tooltip="Sửa"
+                        (click)="editInvoice(item.invoiceCode)">
+                        <i nz-icon nzType="edit"></i>
+                    </button>
+                    <button nz-button nzShape="circle" class="delete-btn" nz-tooltip="Xoá" (click)="onDelete(item)">
+                        <i nz-icon nzType="delete"></i>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </nz-table>
+</div>
+
+
+<!-- Phân trang -->
+<div class="footer-pagination">
+    <nz-pagination [nzPageIndex]="currentPage" [nzTotal]="totalItems" [nzPageSize]="pageSize" nzSize="small"
+        [nzShowSizeChanger]="true" [nzPageSizeOptions]="[10, 20, 50, 100]" (nzPageIndexChange)="onPageChange($event)"
+        (nzPageSizeChange)="onPageSizeChange($event)" [nzShowTotal]="rangeTemplate"></nz-pagination>
+    <ng-template #rangeTemplate let-range="range" let-total>
+        {{ range[0] }}-{{ range[1] }} / {{ total }} mục
+    </ng-template>
+</div>

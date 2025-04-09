@@ -1,0 +1,187 @@
+// :host ::ng-deep .ant-menu-item-active,
+// :host ::ng-deep .ant-menu-item-selected {
+//     background-color: #1677ff !important;
+//     color: #fff !important;
+// }
+
+:host {
+    display: block;
+    height: 100%;
+}
+
+.active {
+    background-color: #1890ff !important;
+    color: white !important;
+}
+
+.sidebar-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #001529;
+    color: white;
+    position: relative;
+    transition: all 0.3s;
+    overflow: hidden;
+}
+
+// Logo và toggle button
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+
+    .logo-container {
+        overflow: hidden;
+        height: 32px;
+        transition: all 0.3s;
+
+        &.collapsed {
+            width: 32px;
+        }
+
+        .logo-img {
+            height: 32px;
+            max-width: 160px;
+        }
+
+        .logo-small {
+            height: 32px;
+            width: 32px;
+        }
+    }
+
+    .collapse-btn {
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s;
+
+        &:hover {
+            color: #1890ff;
+        }
+    }
+}
+
+// Thông tin người dùng
+.user-profile {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    transition: all 0.3s;
+
+    &.collapsed {
+        justify-content: center;
+        padding: 8px;
+    }
+
+    .user-avatar {
+        margin-right: 12px;
+
+        nz-avatar {
+            background-color: #1890ff;
+        }
+    }
+
+    .user-info {
+        overflow: hidden;
+
+        .user-name {
+            margin: 0;
+            font-size: 14px;
+            color: white;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-role {
+            margin: 0;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.65);
+        }
+    }
+}
+
+// Menu chính
+.sidebar-menu {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 3px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background-color: transparent;
+    }
+
+    // Override menu styles
+    ::ng-deep .ant-menu-dark {
+        background-color: transparent;
+
+        .ant-menu-item-selected {
+            background-color: #1890ff;
+        }
+
+        .ant-menu-item:hover:not(.ant-menu-item-selected),
+        .ant-menu-submenu-title:hover:not(.ant-menu-submenu-selected) {
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+    }
+}
+
+// Divider
+::ng-deep .ant-divider {
+    background-color: rgba(255, 255, 255, 0.12);
+    margin: 0;
+
+    &.collapsed {
+        margin: 0 8px;
+    }
+}
+
+// Footer
+.sidebar-footer {
+    padding: 16px;
+    transition: all 0.3s;
+
+    &.collapsed {
+        display: flex;
+        justify-content: center;
+        padding: 8px;
+    }
+
+    .logout-btn {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 8px;
+        background-color: transparent;
+        border: none;
+        color: rgba(255, 255, 255, 0.65);
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 4px;
+        transition: all 0.3s;
+
+        &:hover {
+            color: #ff4d4f;
+            background-color: rgba(255, 77, 79, 0.08);
+        }
+
+        i {
+            font-size: 16px;
+        }
+    }
+}

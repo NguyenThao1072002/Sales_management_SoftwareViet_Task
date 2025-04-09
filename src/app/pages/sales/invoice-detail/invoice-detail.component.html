@@ -1,0 +1,180 @@
+<div class="invoice-detail wide">
+    <div class="header-actions">
+        <h2 class="form-title">{{ pageTitle }}</h2>
+        <button nz-button nzType="default" class="back-button" (click)="goBack()">
+            <i nz-icon nzType="arrow-left"></i> Trở lại
+        </button>
+    </div>
+
+    <form *ngIf="currentInvoice" [formGroup]="invoiceForm" (ngSubmit)="onSubmit()">
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Khách hàng</label>
+                <input nz-input formControlName="customer" class="disabled-field" />
+            </div>
+
+            <div class="form-group">
+                <label>Số điện thoại</label>
+                <input nz-input formControlName="phone" class="disabled-field" />
+            </div>
+
+            <div class="form-group">
+                <label>Địa chỉ</label>
+                <input nz-input formControlName="address" class="disabled-field" />
+            </div>
+
+            <div class="form-group">
+                <label>Công nợ</label>
+                <input nz-input [disabled]="true" value="0" class="disabled-field" />
+            </div>
+
+            <div class="form-group">
+                <label>Số chứng từ</label>
+                <input nz-input formControlName="code" class="disabled-field" />
+            </div>
+
+            <div class="form-group">
+                <label>Ngày chứng từ</label>
+                <nz-date-picker formControlName="date" nzFormat="dd/MM/yyyy" class="disabled-field"></nz-date-picker>
+            </div>
+
+            <div class="form-group">
+                <label>Ngày thanh toán</label>
+                <nz-date-picker formControlName="paymentDate" nzFormat="dd/MM/yyyy"
+                    class="disabled-field"></nz-date-picker>
+            </div>
+
+            <div class="form-group">
+                <label>Ngày giao hàng</label>
+                <nz-date-picker formControlName="deliveryDate" nzFormat="dd/MM/yyyy"
+                    class="disabled-field"></nz-date-picker>
+            </div>
+
+            <div class="form-group">
+                <label>Người giao hàng</label>
+                <input nz-input [disabled]="true" formControlName="deliveryPerson" class="disabled-field" />
+            </div>
+
+
+
+            <div class="form-group">
+                <label>Hình thức TT</label>
+                <nz-select formControlName="paymentMethod" class="disabled-field">
+                    <nz-option *ngFor="let method of paymentMethods" [nzValue]="method.value"
+                        [nzLabel]="method.label"></nz-option>
+                </nz-select>
+            </div>
+
+            <div class="form-group">
+                <label>Số chứng từ tham chiếu</label>
+                <input nz-input formControlName="referenceCode" class="disabled-field" />
+            </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 24px">
+            <label>Địa chỉ giao hàng</label>
+            <input nz-input formControlName="deliveryAddress" class="disabled-field" />
+        </div>
+
+        <div class="form-group" style="margin-bottom: 24px">
+            <label>Ghi chú hóa đơn</label>
+            <input nz-input formControlName="invoiceNotes" placeholder="Nhập ghi chú hóa đơn"
+                [class.disabled-field]="isViewOnly" />
+        </div>
+
+        <h3 class="section-title">Danh sách sản phẩm</h3>
+
+        <div class="scrollable-table">
+            <nz-table [nzData]="products" [nzBordered]="true" [nzSize]="'small'" [nzLoading]="loading">
+                <thead>
+                    <tr>
+                        <th>#</th>
+
+                        <th>Mã hàng</th>
+                        <th>Tên hàng</th>
+                        <th>ĐVT</th>
+                        <th>Số lượng</th>
+                        <th>Đơn giá</th>
+                        <th>Thành tiền</th>
+                        <th *ngIf="!isViewOnly">Ghi chú</th>
+                        <th *ngIf="isViewOnly">Ghi chú</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let product of products; let i = index" [class.edited-product]="product.isEdited">
+                        <td>{{ i + 1 }}</td>
+
+                        <td>{{ product.code }}</td>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.unit }}</td>
+
+                        <td>
+                            <ng-container *ngIf="!isViewOnly">
+                                <nz-input-number [(ngModel)]="product.quantity" [ngModelOptions]="{standalone: true}"
+                                    [nzMin]="1" [nzMax]="9999" [nzStep]="1" [nzSize]="'small'" style="width: 70px;"
+                                    (ngModelChange)="updateProductQuantity(product, i)">
+                                </nz-input-number>
+                            </ng-container>
+                            <ng-container *ngIf="isViewOnly">
+                                {{ product.quantity }}
+                            </ng-container>
+                        </td>
+                        <td>{{ product.price | number }}</td>
+                        <td>{{ product.total | number }}</td>
+                        <td>
+                            <ng-container *ngIf="!isViewOnly">
+                                <input nz-input [(ngModel)]="product.notes" [ngModelOptions]="{standalone: true}"
+                                    placeholder="Ghi chú" [nzSize]="'small'" style="width: 150px;"
+                                    (ngModelChange)="updateProductNotes(product, i)">
+                            </ng-container>
+                            <ng-container *ngIf="isViewOnly">
+                                {{ product.notes || '-' }}
+                            </ng-container>
+                        </td>
+                    </tr>
+                </tbody>
+            </nz-table>
+        </div>
+
+        <div class="invoice-summary">
+            <div nz-row [nzGutter]="16" nzAlign="middle">
+                <div nz-col [nzSpan]="12">
+                    <div class="discount-section">
+                        <div class="form-group" style="width: 200px;">
+                            <label>Giảm giá (%)</label>
+                            <nz-input-number formControlName="discountPercent" class="disabled-field"
+                                style="width: 100%"></nz-input-number>
+                        </div>
+                    </div>
+                </div>
+                <div nz-col [nzSpan]="12">
+                    <div class="right">
+                        <div><strong>Số lượng hàng:</strong> {{ products.length }}</div>
+                        <div><strong>Thành tiền:</strong> {{ subtotal | number }} VND</div>
+                        <div><strong>Giảm ({{ discountPercent }}%):</strong> {{ discountAmount | number }} VND</div>
+                        <div><strong>Tổng tiền:</strong> <span class="total-amount"> {{ currentInvoice.totalAmount |
+                                number }}
+                                VND</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions" *ngIf="!isViewOnly">
+            <button nz-button nzType="default" (click)="onCancel()" type="button"
+                *ngIf="shouldShowSaveButton()">Hủy</button>
+            <button nz-button nzType="primary" type="submit" *ngIf="shouldShowSaveButton()">Lưu</button>
+        </div>
+    </form>
+
+    <div *ngIf="!currentInvoice && loading" class="loading-state">
+        <span nz-icon nzType="loading" nzTheme="outline" style="font-size: 2rem;"></span>
+        <p>Đang tải dữ liệu...</p>
+    </div>
+
+    <div *ngIf="!currentInvoice && !loading" class="error-state">
+        <span nz-icon nzType="warning" nzTheme="outline" style="font-size: 2rem;"></span>
+        <p>Không thể tải dữ liệu hóa đơn</p>
+        <button nz-button nzType="primary" (click)="goBack()">Trở lại</button>
+    </div>
+</div>

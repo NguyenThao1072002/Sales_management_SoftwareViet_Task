@@ -1,0 +1,63 @@
+<div class="products-container">
+    <div class="products-header">
+        <h2 class="products-title">Danh sách sản phẩm</h2>
+        <p class="products-subtitle">Quản lý sản phẩm trong hệ thống</p>
+    </div>
+
+    <div class="product-content">
+        <!-- Thanh tìm kiếm -->
+        <div class="search-bar">
+            <input nz-input placeholder="Tìm kiếm sản phẩm..." [(ngModel)]="searchKeyword" (keyup.enter)="onSearch()">
+            <button nz-button nzType="primary" (click)="onSearch()">
+                <i nz-icon nzType="search"></i>
+                Tìm kiếm
+            </button>
+        </div>
+
+        <!-- Bảng dữ liệu -->
+        <nz-spin [nzSpinning]="isLoading">
+            <div class="table-wrapper">
+                <nz-table #productsTable [nzData]="products" [nzFrontPagination]="false" [nzTotal]="totalItems"
+                    [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" [nzShowSizeChanger]="true" [nzLoading]="isLoading"
+                    (nzPageIndexChange)="onPageIndexChange($event)" (nzPageSizeChange)="onPageSizeChange($event)">
+                    <thead>
+                        <tr>
+                            <th>Mã sản phẩm</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Giá bán</th>
+                            <th>Tồn kho</th>
+                            <th>Ngày tạo</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let product of productsTable.data">
+                            <td>{{ product.productCode }}</td>
+                            <td>{{ product.productName }}</td>
+                            <td>{{ product.price | currency:'VND':'symbol':'1.0-0' }}</td>
+                            <td>{{ product.stockQuantity }}</td>
+                            <td>{{ product.createdDate | date:'dd/MM/yyyy' }}</td>
+                            <td class="action-cell">
+                                <button nz-button nzShape="circle" class="view-btn" nz-tooltip="Xem chi tiết">
+                                    <i nz-icon nzType="eye"></i>
+                                </button>
+                                <button nz-button nzShape="circle" class="edit-btn" nz-tooltip="Sửa">
+                                    <i nz-icon nzType="edit"></i>
+                                </button>
+                                <button nz-button nzShape="circle" class="delete-btn" nz-tooltip="Xóa">
+                                    <i nz-icon nzType="delete"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </nz-table>
+            </div>
+        </nz-spin>
+
+        <!-- Hiển thị khi không có dữ liệu -->
+        <div class="placeholder-message" *ngIf="!isLoading && products.length === 0">
+            <i nz-icon nzType="shopping" nzTheme="outline" style="font-size: 64px;"></i>
+            <h3>Không tìm thấy sản phẩm nào</h3>
+        </div>
+    </div>
+</div>

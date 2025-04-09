@@ -1,0 +1,115 @@
+.customers-container {
+    padding: 24px;
+    background-color: #f5f5f5;
+    min-height: 100%;
+
+    .customers-header {
+        margin-bottom: 24px;
+
+        .customers-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .customers-subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+    }
+
+    .customers-content {
+        background-color: white;
+        padding: 24px;
+        border-radius: 4px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+        .search-bar {
+            display: flex;
+            margin-bottom: 20px;
+            gap: 10px;
+
+            input {
+                flex-grow: 1;
+            }
+
+            button {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            background-color: white;
+
+            th {
+                background-color: #fafafa;
+                color: #262626;
+                font-weight: 500;
+            }
+
+            tr {
+                &:hover {
+                    td {
+                        background-color: #f0f7ff;
+                    }
+                }
+            }
+
+            .action-cell {
+                display: flex;
+                gap: 8px;
+            }
+
+            .view-btn {
+                color: #1890ff;
+                border-color: #1890ff;
+
+                &:hover {
+                    background-color: #e6f7ff;
+                }
+            }
+
+            .edit-btn {
+                color: #52c41a;
+                border-color: #52c41a;
+
+                &:hover {
+                    background-color: #f6ffed;
+                }
+            }
+
+            .delete-btn {
+                color: #f5222d;
+                border-color: #f5222d;
+
+                &:hover {
+                    background-color: #fff1f0;
+                }
+            }
+        }
+    }
+
+    .placeholder-message {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 0;
+        color: #999;
+        text-align: center;
+
+        i {
+            margin-bottom: 16px;
+            color: #1890ff;
+        }
+
+        h3 {
+            font-weight: normal;
+            color: #666;
+        }
+    }
+}

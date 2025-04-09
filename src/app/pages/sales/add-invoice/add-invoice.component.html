@@ -1,0 +1,441 @@
+<div class="add-invoice wide">
+    <h2 class="form-title">Thêm mới hóa đơn bán hàng</h2>
+
+    <form [formGroup]="invoiceForm" (ngSubmit)="onSubmit()">
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Khách hàng <span class="required-star">*</span></label>
+                <!-- <input nz-input formControlName="customer" [(ngModel)]="searchKeyword"
+                    (input)="searchCustomers(searchKeyword)" placeholder="Nhập tên khách hàng" /> 
+                <input nz-input formControlName="customer" placeholder="Nhập tên khách hàng" />
+               
+                <ul *ngIf="customers.length">
+                    <li *ngFor="let customer of customers" (click)="selectCustomer(customer)">
+                        {{ customer.customerCode }} - {{ customer.customerName }} - {{ customer.phoneNumber }}
+                    </li>
+                </ul>
+                -->
+                <input nz-input formControlName="customer" placeholder="Nhập tên khách hàng"
+                    (input)="onCustomerInput($event)" />
+                <ul *ngIf="customers.length">
+                    <li *ngFor="let customer of customers" (click)="selectCustomer(customer)">
+                        {{ customer.customerCode }} - {{ customer.customerName }} - {{ customer.phoneNumber }}
+                    </li>
+                </ul>
+
+                <div *ngIf="customers.length === 0 && !selectedCustomer">Không có khách hàng nào</div>
+
+                <div *ngIf="isFieldInvalid('customer')" class="error-message">
+                    {{ getErrorMessage('customer') }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Số điện thoại</label>
+                <input nz-input formControlName="phoneNumber" placeholder="Nhập SDT khách hàng" />
+                <div *ngIf="isFieldInvalid('phoneNumber')" class="error-message">
+                    {{ getErrorMessage('phone') }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Địa chỉ</label>
+                <input nz-input formControlName="address" placeholder="Nhập địa chỉ khách hàng" />
+                <div *ngIf="isFieldInvalid('address')" class="error-message">
+                    {{ getErrorMessage('address') }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Công nợ</label>
+                <input nz-input disabled value="0" />
+            </div>
+
+            <div class="form-group">
+                <label>Số chứng từ</label>
+                <input nz-input formControlName="code" [value]="invoice.code" placeholder="Nhập số chứng từ" />
+            </div>
+
+            <div class="form-group">
+                <label>Ngày chứng từ <span class="required-star">*</span></label>
+                <nz-date-picker formControlName="date" nzFormat="dd/MM/yyyy"></nz-date-picker>
+                <div *ngIf="isFieldInvalid('date')" class="error-message">
+                    {{ getErrorMessage('date') }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Ngày hạch toán <span class="required-star">*</span></label>
+                <nz-date-picker formControlName="accountingDate" nzFormat="dd/MM/yyyy"></nz-date-picker>
+                <div *ngIf="isFieldInvalid('accountingDate')" class="error-message">
+                    {{ getErrorMessage('accountingDate') }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Ngày giao hàng <span class="required-star">*</span></label>
+                <nz-date-picker formControlName="deliveryDate" nzFormat="dd/MM/yyyy"></nz-date-picker>
+                <div *ngIf="isFieldInvalid('deliveryDate')" class="error-message">
+                    {{ getErrorMessage('deliveryDate') }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Người giao hàng <span class="required-star">*</span></label>
+                <nz-select formControlName="deliveryPerson" nzPlaceHolder="Chọn nhân viên giao">
+                    <nz-option *ngFor="let person of deliveryPersons" [nzValue]="person.value"
+                        [nzLabel]="person.label"></nz-option>
+                </nz-select>
+                <div *ngIf="isFieldInvalid('deliveryPerson')" class="error-message">
+                    {{ getErrorMessage('deliveryPerson') }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Hình thức TT <span class="required-star">*</span></label>
+                <nz-select formControlName="paymentMethod" nzPlaceHolder="Chọn hình thức TT">
+                    <nz-option *ngFor="let method of paymentMethods" [nzValue]="method.value"
+                        [nzLabel]="method.label"></nz-option>
+                </nz-select>
+                <div *ngIf="isFieldInvalid('paymentMethod')" class="error-message">
+                    {{ getErrorMessage('paymentMethod') }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Người tạo</label>
+                <input nz-input formControlName="createdBy" />
+            </div>
+
+            <div class="form-group">
+                <label>Số chứng từ tham chiếu</label>
+                <input nz-input formControlName="referenceCode" placeholder="Nhập CT tham chiếu" />
+            </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 24px">
+            <label>Địa chỉ giao hàng <span class="required-star">*</span></label>
+            <input nz-input formControlName="deliveryAddress" placeholder="Nhập địa chỉ giao hàng" />
+            <div *ngIf="isFieldInvalid('deliveryAddress')" class="error-message">
+                {{ getErrorMessage('deliveryAddress') }}
+            </div>
+        </div>
+        <div class="form-group" style="margin-bottom: 24px">
+            <label>Ghi chú <span class="required-star"></span></label>
+            <input nz-input formControlName="notes" placeholder="Nhập ghi chú đơn hàng" />
+            <div *ngIf="isFieldInvalid('notes')" class="error-message">
+                {{ getErrorMessage('notes') }}
+            </div>
+        </div>
+
+
+
+        <h3 class="section-title">Danh sách sản phẩm</h3>
+        <button nz-button class="add-product-btn" nzType="dashed" (click)="showProductModal()" type="button"
+            icon="plus">Thêm sản
+            phẩm</button>
+
+        <div class="scrollable-table">
+            <nz-table [nzData]="products" [nzBordered]="true" [nzSize]="'small'" [nzNoResult]="noProductTemplate">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Barcode</th>
+                        <th>Mã hàng</th>
+                        <th>Tên hàng</th>
+                        <!-- <th>TK Nợ</th>
+                        <th>TK Có</th> -->
+                        <th>ĐVT</th>
+                        <th>Số lượng</th>
+                        <th>Đơn giá</th>
+                        <th>Thành tiền</th>
+                        <th>Ghi chú</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let product of products; let i = index">
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ product.productCode }}</td>
+                        <td>{{ product.productCode }}</td>
+                        <td>{{ product.productName }}</td>
+                        <!-- <td>{{ product.debitAccount }}</td>
+                        <td>{{ product.creditAccount }}</td> -->
+                        <td>{{ product.unit }}</td>
+                        <td>{{ product.quantity }}</td>
+                        <td>{{ product.price | number }}</td>
+                        <td>{{ product.total | number }}</td>
+                        <td>{{ product.notes }}</td>
+                        <td>
+                            <button nz-button nzType="link" nzDanger (click)="deleteProduct(i)"
+                                type="button">Xóa</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </nz-table>
+            <ng-template #noProductTemplate>
+                <div class="no-product">
+                    <i nz-icon nzType="shopping-cart" nzTheme="outline" style="font-size: 48px;"></i>
+                    <p>Chưa có sản phẩm nào trong hóa đơn</p>
+                    <button nz-button nzType="primary" (click)="showProductModal()" type="button">Thêm sản phẩm</button>
+                </div>
+            </ng-template>
+        </div>
+
+        <div class="invoice-summary">
+            <div nz-row [nzGutter]="16" nzAlign="middle">
+                <div nz-col [nzSpan]="12">
+                    <div class="discount-section">
+                        <div class="form-group" style="width: 200px;">
+                            <label>Giảm giá (%)</label>
+                            <nz-input-number formControlName="discountPercent" [nzMin]="0" [nzMax]="100" [nzStep]="1"
+                                style="width: 100%"></nz-input-number>
+                            <div *ngIf="isFieldInvalid('discountPercent')" class="error-message">
+                                {{ getErrorMessage('discountPercent') }}
+                            </div>
+                        </div>
+                        <div class="form-group" style="width: 200px; margin-left: 16px;">
+                            <label>Phí giao hàng</label>
+                            <nz-input-number formControlName="shippingFee" [nzMin]="0" [nzStep]="1000"
+                                [nzFormatter]="priceFormatter" [nzParser]="priceParser"
+                                style="width: 100%"></nz-input-number>
+                            <div *ngIf="isFieldInvalid('shippingFee')" class="error-message">
+                                {{ getErrorMessage('shippingFee') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div nz-col [nzSpan]="12">
+                    <div class="right">
+                        <div><strong>Số lượng hàng:</strong> {{ products.length }}</div>
+                        <div><strong>Thành tiền:</strong> {{ subtotal | number }} VND</div>
+                        <div><strong>Giảm ({{ discountPercent }}%):</strong> {{ discountAmount | number }} VND</div>
+                        <div><strong>Phí giao hàng:</strong> {{ shippingFee | number }} VND</div>
+                        <div><strong>Tổng tiền:</strong> <span class="total-amount"> {{ invoice.total | number }}
+                                VND</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button nz-button nzType="default" (click)="onCancel()" type="button">Hủy</button>
+            <button nz-button nzType="primary" type="submit"
+                [disabled]="!invoiceForm.get('customer')?.value || products.length === 0">Lưu</button>
+        </div>
+    </form>
+
+    <!-- Modal thêm sản phẩm -->
+    <nz-modal [(nzVisible)]="isProductModalVisible" nzTitle="Thêm sản phẩm vào hóa đơn" (nzOnCancel)="handleCancel()"
+        [nzWidth]="800" [nzFooter]="modalFooter">
+        <ng-container *nzModalContent>
+            <div class="product-selection">
+                <div class="available-products">
+                    <h4>Danh sách sản phẩm có sẵn</h4>
+
+                    <div class="search-container" style="margin-bottom: 16px;">
+                        <div nz-row [nzGutter]="16" nzAlign="middle">
+                            <div nz-col [nzSpan]="14">
+                                <nz-input-group [nzSuffix]="suffixIconSearch">
+                                    <input type="text" nz-input [(ngModel)]="searchKeyword" name="searchKeyword"
+                                        placeholder="Tìm theo mã hoặc tên sản phẩm"
+                                        (ngModelChange)="searchProducts()" />
+                                </nz-input-group>
+                                <ng-template #suffixIconSearch>
+                                    <i nz-icon nzType="search"></i>
+                                </ng-template>
+                            </div>
+                            <div nz-col [nzSpan]="10" style="display: flex; gap: 8px;">
+                                <button nz-button (click)="clearSearch()" *ngIf="searchKeyword">
+                                    <i nz-icon nzType="close-circle"></i> Xóa
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <nz-table [nzData]="filteredProducts" nzSize="small" [nzScroll]="{ y: '240px' }">
+                        <thead>
+                            <tr>
+                                <th [nzWidth]="'40px'">
+                                    <label nz-checkbox [(ngModel)]="allChecked" [nzIndeterminate]="indeterminate"
+                                        (ngModelChange)="onAllCheckedChange($event)">
+                                    </label>
+                                </th>
+                                <th [nzWidth]="'70px'">SL</th>
+                                <!-- <th>Barcode</th> -->
+                                <th>Mã SP</th>
+                                <th>Tên sản phẩm</th>
+                                <th>ĐVT</th>
+                                <th>Đơn giá</th>
+                                <th>Số lượng</th> <!-- Thêm cột Số lượng -->
+                                <th>Thành tiền</th>
+                                <th>Ghi chú</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let product of filteredProducts" (click)="selectProduct(product)"
+                                [class.selected-row]="product.selected" [class.selected]="product.selected">
+                                <td>
+                                    <label nz-checkbox [(ngModel)]="product.selected"
+                                        (ngModelChange)="onItemCheckedChange()"></label>
+                                </td>
+                                <td>
+                                    <!-- Input Number for quantity -->
+                                    <nz-input-number [(ngModel)]="product.quantity" [nzMin]="1"
+                                        [nzMax]="product.stockQuantity" [nzStep]="1"
+                                        style="width: 100%;"></nz-input-number>
+                                </td>
+                                <!-- <td>{{ product.productCode }}</td> -->
+                                <td>{{ product.productCode }}</td>
+                                <td>{{ product.productName }}</td>
+                                <td>{{ product.unit }}</td>
+                                <td>{{ product.price | number }}</td>
+                                <td>{{ product.quantity }}</td>
+                                <td>{{ product.price * product.quantity | number }}</td>
+                                <td>
+                                    <input nz-input [(ngModel)]="product.notes" placeholder="Nhập ghi chú" />
+                                </td>
+
+                                <!-- Thành tiền (Đơn giá * Số lượng) -->
+                                <td>
+                                    <button nz-button nzType="primary" nzSize="small">Chọn</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+
+
+
+                    <!-- Pagination for the table -->
+                    <nz-pagination [(nzPageIndex)]="pageIndex" [nzPageSize]="pageSize" [nzTotal]="totalProducts"
+                        (nzPageIndexChange)="loadProducts(pageIndex)">
+                    </nz-pagination>
+
+
+                    <div class="selection-summary" *ngIf="getSelectedCount() > 0">
+                        <div nz-row nzAlign="middle">
+                            <div nz-col [nzSpan]="24">
+                                <div class="summary-box">
+                                    <i nz-icon nzType="shopping-cart" nzTheme="outline"></i>
+                                    <span>Đã chọn {{ getSelectedCount() }} sản phẩm</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <ng-template #noProductTemplate>
+                        <div class="no-product">
+                            <i nz-icon nzType="shopping-cart" nzTheme="outline" style="font-size: 48px;"></i>
+                            <p>Chưa có sản phẩm nào trong hóa đơn</p>
+                            <button nz-button nzType="primary" (click)="showProductModal()" type="button">Thêm sản
+                                phẩm</button>
+                        </div>
+                    </ng-template>
+                </div>
+
+                <div style="margin-top: 24px;">
+                    <h4>Thông tin sản phẩm</h4>
+                    <div nz-row [nzGutter]="16">
+                        <div nz-col [nzSpan]="8">
+                            <nz-form-item>
+                                <nz-form-label>Barcode</nz-form-label>
+                                <nz-form-control>
+                                    <input nz-input [(ngModel)]="newProduct.productCode" name="barcode" />
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                        <div nz-col [nzSpan]="8">
+                            <nz-form-item>
+                                <nz-form-label>Mã sản phẩm</nz-form-label>
+                                <nz-form-control>
+                                    <input nz-input [(ngModel)]="newProduct.productCode" name="code" />
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                        <div nz-col [nzSpan]="8">
+                            <nz-form-item>
+                                <nz-form-label>Tên sản phẩm</nz-form-label>
+                                <nz-form-control>
+                                    <input nz-input [(ngModel)]="newProduct.productName" name="name" />
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                    </div>
+
+                    <div nz-row [nzGutter]="16">
+                        <!-- <div nz-col [nzSpan]="8">
+                            <nz-form-item>
+                                <nz-form-label>TK Nợ</nz-form-label>
+                                <nz-form-control>
+                                    <input nz-input [(ngModel)]="newProduct.debitAccount" name="debitAccount" />
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                        <div nz-col [nzSpan]="8">
+                            <nz-form-item>
+                                <nz-form-label>TK Có</nz-form-label>
+                                <nz-form-control>
+                                    <input nz-input [(ngModel)]="newProduct.creditAccount" name="creditAccount" />
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div> -->
+                        <div nz-col [nzSpan]="8">
+                            <nz-form-item>
+                                <nz-form-label>ĐVT</nz-form-label>
+                                <nz-form-control>
+                                    <input nz-input [(ngModel)]="newProduct.unit" name="unit" />
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                    </div>
+
+                    <div nz-row [nzGutter]="16">
+                        <div nz-col [nzSpan]="8">
+                            <nz-form-item>
+                                <nz-form-label>Số lượng</nz-form-label>
+                                <nz-form-control>
+                                    <nz-input-number [(ngModel)]="newProduct.quantity" name="quantity" [nzMin]="1"
+                                        [nzStep]="1" style="width: 100%"></nz-input-number>
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                        <div nz-col [nzSpan]="8">
+                            <nz-form-item>
+                                <nz-form-label>Đơn giá</nz-form-label>
+                                <nz-form-control>
+                                    <nz-input-number [(ngModel)]="newProduct.price" name="price" [nzMin]="0"
+                                        [nzStep]="1000" [nzFormatter]="priceFormatter" [nzParser]="priceParser"
+                                        style="width: 100%"></nz-input-number>
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+
+
+                        <div nz-col [nzSpan]="8">
+                            <nz-form-item>
+                                <nz-form-label>Thành tiền</nz-form-label>
+                                <nz-form-control>
+                                    <input nz-input [value]="newProduct.price * newProduct.quantity | number"
+                                        disabled />
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+
+        <ng-template #modalFooter>
+            <div style="display: flex; gap: 8px;">
+                <button nz-button nzType="default" (click)="handleCancel()">Hủy</button>
+                <button nz-button nzType="primary" (click)="addMultipleProducts()">
+                    <i nz-icon nzType="plus-circle"></i> Thêm các sản phẩm đã chọn
+                </button>
+                <button nz-button nzType="primary" (click)="addProduct()" [disabled]="!newProduct.productName">
+                    <i nz-icon nzType="plus"></i> Thêm sản phẩm đơn lẻ
+                </button>
+            </div>
+        </ng-template>
+    </nz-modal>
+</div>

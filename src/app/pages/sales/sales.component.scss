@@ -1,0 +1,502 @@
+:host {
+    display: block;
+    padding: 24px;
+    background: #ffffff;
+    font-family: 'Roboto', sans-serif;
+}
+
+// Cùng style cho cả thẻ trạng thái ngoài bảng và trong bảng
+@mixin status-style($bg-color, $border-color, $text-color) {
+    background-color: $bg-color;
+    border: 1px solid $border-color;
+    color: $text-color;
+}
+
+// Phần header: từ ngày - đến ngày - tìm kiếm - nút
+.sales-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 12px;
+    margin-bottom: 16px;
+
+    .filters {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: 12px;
+
+        nz-date-picker,
+        input[nz-input] {
+            width: 240px;
+            background: white;
+            border-radius: 4px;
+        }
+
+        button[nz-button] {
+            background-color: #1890ff;
+            border-color: #1890ff;
+            border-radius: 20px;
+            color: white;
+            padding: 0 16px;
+
+            i {
+                font-size: 14px;
+                margin-right: 4px;
+            }
+
+            &:hover {
+                background-color: #40a9ff;
+                border-color: #40a9ff;
+            }
+        }
+    }
+
+    .actions {
+        button[nz-button] {
+            background-color: #1890ff;
+            border-color: #1890ff;
+            border-radius: 20px;
+            color: white;
+            padding: 0 16px;
+
+            i {
+                font-size: 14px;
+                margin-right: 4px;
+            }
+
+            &:hover {
+                background-color: #40a9ff;
+                border-color: #40a9ff;
+            }
+        }
+    }
+}
+
+.status-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+
+    .status-filter {
+        padding: 6px 16px;
+        border-radius: 16px;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-size: 14px;
+
+        &:hover {
+            opacity: 0.8;
+        }
+
+        &.active {
+            font-weight: 500;
+            background-color: #054eed;
+            color: white;
+        }
+
+        &.completed {
+            background-color: #e6f7ff;
+            border: 1px solid #91d5ff;
+            color: #0050b3;
+
+            &.active {
+                background-color: #0050b3;
+                color: white;
+            }
+        }
+
+        &.pending {
+            background-color: #fff7e6;
+            border: 1px solid #ffd591;
+            color: #d46b08;
+
+            &.active {
+                background-color: #d46b08;
+                color: white;
+            }
+        }
+
+        &.rejected {
+            background-color: #fff1f0;
+            border: 1px solid #ffa39e;
+            color: #cf1322;
+
+            &.active {
+                background-color: #cf1322;
+                color: white;
+            }
+        }
+    }
+}
+
+.table-wrapper {
+    background: white;
+    border-radius: 4px;
+    margin-bottom: 0;
+    overflow-x: auto;
+    max-height: calc(65vh - 50px);
+    overflow-y: auto;
+
+    nz-table {
+        background: white;
+    }
+
+    th {
+        background-color: #d1e1f0;
+        font-weight: 700;
+        text-align: center;
+    }
+
+    td {
+        background-color: white;
+    }
+
+    .status-label {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+        display: inline-block;
+        min-width: 80px;
+        text-align: center;
+
+        &.text-done {
+            @include status-style(#e6f7ee, #b7eb8f, #52c41a);
+        }
+
+        &.text-pending {
+            @include status-style(#e6f4ff, #91caff, #1677ff);
+        }
+
+        &.text-rejected {
+            @include status-style(#fff2e8, #ffbb96, #fa541c);
+        }
+    }
+
+    .action-btns {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+
+        button {
+            color: #595959;
+            border-color: #d9d9d9;
+
+            &.view-btn:hover {
+                color: #1890ff;
+                border-color: #1890ff;
+            }
+
+            &.edit-btn:hover {
+                color: #52c41a;
+                border-color: #52c41a;
+            }
+
+            &.delete-btn:hover {
+                color: #f5222d;
+                border-color: #f5222d;
+            }
+        }
+    }
+}
+
+.empty-data {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 0;
+
+    i {
+        font-size: 48px;
+        color: #d9d9d9;
+        margin-bottom: 16px;
+    }
+
+    p {
+        color: rgba(0, 0, 0, 0.45);
+    }
+}
+
+.footer-pagination {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+    background: white;
+    padding: 8px 16px;
+    border-radius: 0 0 4px 4px;
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+    border-top: 1px solid #f0f0f0;
+}
+
+// Custom CSS cho modal xác nhận xóa
+::ng-deep .ant-modal-confirm-warning .ant-modal-confirm-body>.anticon,
+::ng-deep .ant-modal-confirm-confirm .ant-modal-confirm-body>.anticon {
+    color: #ff4d4f;
+}
+
+::ng-deep .ant-modal-confirm-btns .ant-btn-primary[nz-ok-danger] {
+    background-color: #ff4d4f;
+    border-color: #ff4d4f;
+
+    &:hover {
+        background-color: #ff7875;
+        border-color: #ff7875;
+    }
+}
+
+::ng-deep .ant-modal-confirm-content {
+    margin-top: 16px !important;
+    margin-left: 0 !important;
+
+    strong {
+        color: #ff4d4f;
+    }
+}
+
+.actions {
+    display: flex;
+    flex-wrap: NOwrap;
+    gap: 12px;
+
+    .custom-action-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 500;
+        background-color: #1890ff;
+        color: #fff;
+        border: none;
+        border-radius: 20px;
+        padding: 0 16px;
+        height: 36px;
+
+        i[nz-icon] {
+            font-size: 16px;
+        }
+    }
+
+    .custom-action-btn:hover {
+        background-color: #40a9ff;
+        color: #fff;
+    }
+}
+
+// Table style
+::ng-deep .ant-table {
+    border-radius: 8px;
+    background: #ffffff;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+
+    .ant-table-thead>tr>th {
+        background-color: #daffdf;
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        border-bottom: 1px solid #eaeaea;
+    }
+
+    .ant-table-tbody>tr>td {
+        font-size: 14px;
+        padding: 12px 16px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .ant-table-tbody>tr:hover>td {
+        background-color: #f6faff;
+        transition: background-color 0.3s ease;
+    }
+
+    .ant-table-cell {
+        vertical-align: middle;
+    }
+
+    .highlight-row {
+        background-color: #ffe58f !important;
+    }
+}
+
+// Pagination styling
+::ng-deep .ant-pagination {
+    display: flex;
+    align-items: center;
+    margin-top: 16px;
+
+    .ant-pagination-item-active {
+        background-color: #1890ff;
+        border-color: #1890ff;
+
+        a {
+            color: white;
+        }
+    }
+}
+
+// Style cho các nút thao tác
+.action-btns {
+    white-space: nowrap;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+
+    button {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        border: none;
+
+        i {
+            font-size: 16px;
+        }
+    }
+
+    .view-btn {
+        background-color: #38b2ff;
+        color: white;
+
+        &:hover {
+            background-color: #65c1ff;
+        }
+    }
+
+    .edit-btn {
+        background-color: #ffc53d;
+        color: white;
+
+        &:hover {
+            background-color: #ffd666;
+        }
+    }
+
+    .delete-btn {
+        background-color: #ff4d4f;
+        color: white;
+
+        &:hover {
+            background-color: #ff7875;
+        }
+    }
+}
+
+// Style cho trạng thái
+.status-label {
+    padding: 2px 12px;
+    border-radius: 12px;
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 500;
+    min-width: 80px;
+    text-align: center;
+
+    &.text-done {
+        @include status-style(#f6ffed, #b7eb8f, #52c41a);
+    }
+
+    &.text-pending {
+        @include status-style(#e6f7ff, #91d5ff, #1890ff);
+    }
+
+    &.text-rejected {
+        @include status-style(#fff2f0, #ffccc7, #ff4d4f);
+    }
+}
+
+// Thẻ trạng thái
+.status-tags {
+    margin-bottom: 16px;
+    display: flex;
+    gap: 8px;
+
+    .tag {
+        padding: 4px 12px;
+        border-radius: 16px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.3s;
+        font-weight: 500;
+
+        &.all {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        &.done {
+            @include status-style(#f6ffed, #b7eb8f, #52c41a);
+        }
+
+        &.pending {
+            @include status-style(#e6f7ff, #91d5ff, #1890ff);
+        }
+
+        &.rejected {
+            @include status-style(#fff2f0, #ffccc7, #ff4d4f);
+        }
+
+        &:hover {
+            opacity: 0.8;
+        }
+    }
+}
+
+.text-done {
+    color: #1677ff;
+    font-weight: 500;
+}
+
+.text-pending {
+    color: #faad14;
+    font-weight: 500;
+}
+
+.text-rejected {
+    color: #ff4d4f;
+    font-weight: 500;
+}
+
+// Tất cả các dòng có nền trắng
+::ng-deep .ant-table-tbody>tr>td {
+    background-color: #ffffff !important;
+    text-align: center;
+}
+
+// Custom CSS cho modal xóa
+:host ::ng-deep .custom-delete-modal {
+    .ant-modal-content {
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .ant-modal-body {
+        padding: 24px;
+        text-align: center;
+    }
+
+    .ant-modal-footer {
+        border-top: none;
+        padding: 0 24px 24px;
+        text-align: center;
+
+        .ant-btn {
+            min-width: 100px;
+            border-radius: 4px;
+        }
+
+        .ant-btn-primary {
+            background-color: #f5222d;
+            border-color: #f5222d;
+
+            &:hover {
+                background-color: #ff4d4f;
+                border-color: #ff4d4f;
+            }
+        }
+    }
+}

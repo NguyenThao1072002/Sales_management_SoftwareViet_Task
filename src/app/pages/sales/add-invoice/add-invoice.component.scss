@@ -1,0 +1,300 @@
+.add-invoice.wide {
+    background: #fff;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    max-width: 1200px !important;
+    margin: 0 auto;
+
+
+    .form-title {
+        font-size: 22px;
+        font-weight: 900;
+        margin-bottom: 36px;
+        color: #054eed;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    form {
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 10px;
+
+            label {
+                font-weight: 500;
+                margin-bottom: 6px;
+                color: #444;
+
+                .required-star {
+                    color: #ff4d4f;
+                }
+            }
+
+            input[nz-input],
+            nz-select,
+            nz-date-picker,
+            nz-input-number {
+                width: 100%;
+            }
+
+            .error-message {
+                color: #ff4d4f;
+                font-size: 12px;
+                margin-top: 5px;
+            }
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+
+            button {
+                min-width: 100px;
+                font-weight: 500;
+            }
+        }
+
+        .invoice-summary {
+            margin-top: 24px;
+            padding: 16px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #f0f0f0;
+
+            .discount-section {
+                display: flex;
+                align-items: flex-start;
+            }
+
+            .right {
+                text-align: right;
+
+                div {
+                    margin-bottom: 8px;
+                    font-size: 14px;
+                }
+
+                .total-amount {
+                    font-size: 18px;
+                    font-weight: bold;
+                    color: #054eed;
+                }
+            }
+        }
+
+        .add-product-btn {
+            margin-bottom: 16px;
+            border-style: dashed;
+            color: #02c60b;
+            background-color: #ffffff;
+            border-color: #6ffb92;
+        }
+
+        .add-product-btn:hover {
+            background-color: #e6f7ff;
+            border-color: #bcff69;
+            color: #c29519;
+        }
+
+        .scrollable-table {
+            overflow-x: auto;
+        }
+
+        .scrollable-table nz-table {
+            min-width: 1200px;
+        }
+
+        nz-table ::ng-deep th:nth-child(1),
+        nz-table ::ng-deep th:nth-child(2),
+        nz-table ::ng-deep th:nth-child(3) {
+            background-color: #daffdf !important;
+        }
+
+        nz-table ::ng-deep td:nth-child(1),
+        nz-table ::ng-deep td:nth-child(2),
+        nz-table ::ng-deep td:nth-child(3) {
+            position: sticky;
+            left: 0;
+            background: #fff !important;
+            z-index: 1;
+        }
+
+        // Style for newly added products with animation
+        tr.new-product {
+            animation: highlight-new-row 3s ease-in-out;
+        }
+
+        .no-product {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 0;
+
+            i {
+                margin-bottom: 16px;
+                color: #d9d9d9;
+            }
+
+            p {
+                margin-bottom: 16px;
+                color: #8c8c8c;
+                font-size: 16px;
+            }
+        }
+    }
+}
+
+// Styling for product modal
+.product-selection {
+    .search-container {
+        margin-bottom: 16px;
+    }
+
+    .no-result {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        color: #999;
+
+        i {
+            margin-bottom: 12px;
+        }
+
+        p {
+            margin-bottom: 0;
+            font-size: 16px;
+        }
+    }
+
+    // Style for selected rows
+    ::ng-deep .ant-table-tbody>tr.selected-row {
+        background-color: #e6f7ff;
+    }
+
+    // Style for checkboxes
+    ::ng-deep .ant-checkbox-wrapper {
+        margin-left: 8px;
+    }
+
+    // Style for selection summary
+    .selection-summary {
+        margin-top: 12px;
+
+        .summary-box {
+            background-color: #f0f8ff;
+            border: 1px solid #d9e8f7;
+            border-radius: 4px;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+
+            i {
+                font-size: 18px;
+                color: #1890ff;
+                margin-right: 8px;
+            }
+
+            span {
+                font-weight: 500;
+                color: #1890ff;
+            }
+        }
+    }
+}
+/* Hiệu ứng khi hover qua dòng sản phẩm */
+.selected-row {
+  &:hover {
+    background-color: #f5f5f5; // Màu nền khi di chuột qua
+    cursor: pointer; // Thay đổi con trỏ chuột
+    transform: scale(1.02); // Hiệu ứng phóng to nhẹ khi di chuột qua
+    transition: transform 0.2s ease-in-out; // Thêm hiệu ứng mượt mà
+  }
+
+  /* Khi sản phẩm được chọn */
+  &.selected {
+    background-color: #e0f7fa; // Màu nền khi sản phẩm được chọn
+    border-left: 4px solid #00796b; // Đánh dấu sản phẩm đã chọn bằng đường viền
+  }
+}
+
+/* Khi checkbox được chọn */
+.nz-checkbox:checked {
+  + .selected-row {
+    background-color: #80deea; // Màu nền khi checkbox được chọn
+  }
+}
+
+/* Khi checkbox chưa được chọn */
+.nz-checkbox:unchecked {
+  + .selected-row {
+    background-color: #ffffff; // Màu nền mặc định khi checkbox chưa được chọn
+  }
+}
+ul {
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 8px;
+  padding-left: 0;
+  list-style: none;
+  background-color: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+li {
+  padding: 8px;
+  cursor: pointer;
+}
+
+li:hover {
+  background-color: #f5f5f5;
+}
+
+li.selected {
+  background-color: #e0e0e0;
+}
+
+
+// Animation for highlighting new products
+@keyframes highlight-new-row {
+    0% {
+        background-color: #f6ffed;
+    }
+
+    50% {
+        background-color: #b7eb8f;
+    }
+
+    100% {
+        background-color: transparent;
+    }
+}
+
+// Thêm CSS cho modal thêm sản phẩm
+:host ::ng-deep .ant-modal {
+    top: 20px;
+
+    // Giảm padding của header modal
+    .ant-modal-header {
+        padding: 12px 24px;
+    }
+
+    // Giảm khoảng cách giữa header và body
+    .ant-modal-body {
+        padding-top: 16px;
+    }
+}

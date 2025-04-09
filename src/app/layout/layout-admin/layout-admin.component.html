@@ -1,0 +1,37 @@
+<nz-layout class="app-layout">
+    <nz-sider class="sidebar" nzTheme="dark" [nzWidth]="240" [nzCollapsedWidth]="80" [nzCollapsed]="isCollapsed"
+        [nzTrigger]="null">
+        <app-sidebar-menu [isCollapsed]="isCollapsed" (toggleCollapsed)="onToggleCollapsed($event)"></app-sidebar-menu>
+    </nz-sider>
+    <nz-layout>
+        <nz-header class="app-header">
+            <div class="header-content">
+                <div class="breadcrumb-container">
+                    <nz-breadcrumb>
+                        <nz-breadcrumb-item>Sales Management</nz-breadcrumb-item>
+                        <nz-breadcrumb-item>Sales Invoices</nz-breadcrumb-item>
+                    </nz-breadcrumb>
+                </div>
+                <div class="header-actions">
+                    <button class="action-button" nz-dropdown [nzDropdownMenu]="menu">
+                        <i nz-icon nzType="bell" nzTheme="outline"></i>
+                        <span class="notification-badge">5</span>
+                    </button>
+                    <nz-dropdown-menu #menu="nzDropdownMenu">
+                        <ul nz-menu>
+                            <li nz-menu-item>Đơn hàng mới từ khách hàng A</li>
+                            <li nz-menu-item>5 sản phẩm sắp hết hàng</li>
+                            <li nz-menu-item>Cập nhật hệ thống mới</li>
+                        </ul>
+                    </nz-dropdown-menu>
+                    <nz-avatar class="user-avatar" nzIcon="user"></nz-avatar>
+                </div>
+            </div>
+        </nz-header>
+        <nz-content class="app-content">
+            <div class="content-wrapper">
+                <router-outlet></router-outlet>
+            </div>
+        </nz-content>
+    </nz-layout>
+</nz-layout>

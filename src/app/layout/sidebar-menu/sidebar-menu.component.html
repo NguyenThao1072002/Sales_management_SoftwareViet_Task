@@ -1,0 +1,61 @@
+<div class="sidebar-container">
+    <!-- Logo và toggle button -->
+    <div class="sidebar-header">
+        <!-- <div class="logo-container" [class.collapsed]="isCollapsed">
+            <img src="assets/images/logo.png" alt="Logo" class="logo-img" *ngIf="!isCollapsed">
+            <img src="assets/images/logo-small.png" alt="Logo" class="logo-small" *ngIf="isCollapsed">
+        </div> -->
+        <button class="collapse-btn" (click)="toggleSidebar()">
+            <i nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"></i>
+        </button>
+    </div>
+
+    <!-- Thông tin người dùng -->
+    <div class="user-profile" [class.collapsed]="isCollapsed">
+        <div class="user-avatar">
+            <nz-avatar nzIcon="user" nzSize="large"></nz-avatar>
+        </div>
+        <div class="user-info" *ngIf="!isCollapsed">
+            <h4 class="user-name">{{ userName }}</h4>
+            <p class="user-role">{{ userRole }}</p>
+        </div>
+    </div>
+
+    <nz-divider [class.collapsed]="isCollapsed"></nz-divider>
+
+    <!-- Menu chính -->
+    <div class="sidebar-menu">
+        <ul nz-menu nzMode="inline" [nzInlineCollapsed]="isCollapsed" nzTheme="dark">
+            <!-- Menu items -->
+            <ng-container *ngFor="let item of menuItems">
+                <!-- Menu item không có submenu -->
+                <li nz-menu-item *ngIf="!item.children" [routerLink]="item.path"
+                    routerLinkActive="ant-menu-item-selected" (click)="onMenuItemClick(item)">
+                    <i nz-icon [nzType]="item.icon"></i>
+                    <span>{{ item.title }}</span>
+                </li>
+
+                <!-- Menu item có submenu -->
+                <li nz-submenu *ngIf="item.children" [nzTitle]="item.title" [nzIcon]="item.icon"
+                    [nzOpen]="item.expanded">
+                    <ul>
+                        <li nz-menu-item *ngFor="let child of item.children" [routerLink]="child.path"
+                            routerLinkActive="ant-menu-item-selected" (click)="onMenuItemClick(child)">
+                            <i nz-icon [nzType]="child.icon"></i>
+                            <span>{{ child.title }}</span>
+                        </li>
+                    </ul>
+                </li>
+            </ng-container>
+        </ul>
+    </div>
+
+    <!-- Footer với nút đăng xuất -->
+    <div class="sidebar-footer" [class.collapsed]="isCollapsed">
+        <nz-divider [class.collapsed]="isCollapsed"></nz-divider>
+        <button nz-tooltip nzTooltipTitle="Đăng xuất" nzTooltipPlacement="right" (click)="logout()" class="logout-btn">
+            <i nz-icon nzType="logout"></i>
+            <span *ngIf="!isCollapsed">Đăng xuất</span>
+        </button>
+    </div>
+</div>

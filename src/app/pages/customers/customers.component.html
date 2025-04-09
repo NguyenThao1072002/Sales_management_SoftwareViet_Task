@@ -1,0 +1,63 @@
+<div class="customers-container">
+    <div class="customers-header">
+        <h2 class="customers-title">Danh sách khách hàng</h2>
+        <p class="customers-subtitle">Quản lý khách hàng trong hệ thống</p>
+    </div>
+
+    <div class="customers-content">
+        <!-- Thanh tìm kiếm -->
+        <div class="search-bar">
+            <input nz-input placeholder="Tìm kiếm khách hàng..." [(ngModel)]="searchKeyword" (keyup.enter)="onSearch()">
+            <button nz-button nzType="primary" (click)="onSearch()">
+                <i nz-icon nzType="search"></i>
+                Tìm kiếm
+            </button>
+        </div>
+
+        <!-- Bảng dữ liệu -->
+        <nz-spin [nzSpinning]="isLoading">
+            <div class="table-wrapper">
+                <nz-table #customersTable [nzData]="customers" [nzFrontPagination]="false" [nzTotal]="totalItems"
+                    [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" [nzShowSizeChanger]="true" [nzLoading]="isLoading"
+                    (nzPageIndexChange)="onPageIndexChange($event)" (nzPageSizeChange)="onPageSizeChange($event)">
+                    <thead>
+                        <tr>
+                            <th>Mã khách hàng</th>
+                            <th>Tên khách hàng</th>
+                            <th>Số điện thoại</th>
+                            <th>Email</th>
+                            <th>Địa chỉ</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let customer of customersTable.data">
+                            <td>{{ customer.customerCode }}</td>
+                            <td>{{ customer.customerName }}</td>
+                            <td>{{ customer.phoneNumber }}</td>
+                            <td>{{ customer.email }}</td>
+                            <td>{{ customer.address }}</td>
+                            <td class="action-cell">
+                                <button nz-button nzShape="circle" class="view-btn" nz-tooltip="Xem chi tiết">
+                                    <i nz-icon nzType="eye"></i>
+                                </button>
+                                <button nz-button nzShape="circle" class="edit-btn" nz-tooltip="Sửa">
+                                    <i nz-icon nzType="edit"></i>
+                                </button>
+                                <button nz-button nzShape="circle" class="delete-btn" nz-tooltip="Xóa">
+                                    <i nz-icon nzType="delete"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </nz-table>
+            </div>
+        </nz-spin>
+
+        <!-- Hiển thị khi không có dữ liệu -->
+        <div class="placeholder-message" *ngIf="!isLoading && customers.length === 0">
+            <i nz-icon nzType="user" nzTheme="outline" style="font-size: 64px;"></i>
+            <h3>Không tìm thấy khách hàng nào</h3>
+        </div>
+    </div>
+</div>
